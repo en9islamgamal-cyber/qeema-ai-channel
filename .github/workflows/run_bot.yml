@@ -1,0 +1,30 @@
+name: Run AI Video Bot
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # بيشتغل كل يوم الساعة 9 الصبح
+  workflow_dispatch: # ده بيخليك تقدر تشغله يدوي بـ "زرار"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install google-api-python-client google-auth-oauthlib google-auth-httplib2 requests
+
+      - name: Run Script
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          # ضيف هنا باقي الـ Secrets اللي إنت حطيتها في GitHub بنفس الأسماء
+        run: python main.py
